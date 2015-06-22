@@ -7,7 +7,7 @@ This library is under development. Don't use it in production environment!
 ## Installation
 You can install this library via composer
 
-<code>composer require wilgucki/dbrepository</code>
+<code>composer require wilgucki/dbrepository @dev</code>
 
 Next you need to add ServiceProvider in your app.php config file.
 
