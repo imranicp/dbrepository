@@ -1,0 +1,20 @@
+{
+    "name": "wilgucki/dbrepository",
+    "description": "Library that automatically detect changes in your database and stores them in repository table.",
+    "keywords": "Laravel, database, repository",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Maciej Wilgucki",
+            "email": "mwilgucki@gmail.com"
+        }
+    ],
+    "require": {
+    	"php": ">=5.5.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Wilgucki\\DbRepository\\": "src"
+        }
+    },
+}
