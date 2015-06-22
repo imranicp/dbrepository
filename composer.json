@@ -1,7 +1,7 @@
 {
     "name": "wilgucki/dbrepository",
     "description": "Library that automatically detect changes in your database and stores them in repository table.",
-    "keywords": "Laravel, database, repository",
+    "keywords": ["Laravel", "database", "repository"],
     "license": "MIT",
     "authors": [
         {
