@@ -12,11 +12,13 @@ class DbRepositoryListener
 
         $listen = config('dbrepository.listen');
 
-        foreach($listen as $class) {
-            $events->listen(
-                'eloquent.saving: ' . $class,
-                'Wilgucki\DbRepository\Listener\DbRepositoryListener@onModelSaving'
-            );
+        if(is_array($listen)) {
+            foreach ($listen as $class) {
+                $events->listen(
+                    'eloquent.saving: ' . $class,
+                    'Wilgucki\DbRepository\Listener\DbRepositoryListener@onModelSaving'
+                );
+            }
         }
     }
 

@@ -26,20 +26,22 @@ class DbRepositoryTables extends \Illuminate\Console\Command
     {
         $listen = config('dbrepository.listen');
 
-        foreach($listen as $class) {
-            $obj = new $class;
-            $tableName = $obj->getTable();
-            $columns = \Schema::getColumnListing($tableName);
-            if(!\Schema::hasTable($tableName . '_repository')) {
-                \Schema::create($tableName . '_repository', function ($table) use ($columns, $tableName) {
-                    $table->increments('id');
-                    $table->timestamps();
+        if(is_array($listen)) {
+            foreach ($listen as $class) {
+                $obj = new $class;
+                $tableName = $obj->getTable();
+                $columns = \Schema::getColumnListing($tableName);
+                if (!\Schema::hasTable($tableName . '_repository')) {
+                    \Schema::create($tableName . '_repository', function ($table) use ($columns, $tableName) {
+                        $table->increments('id');
+                        $table->timestamps();
 
-                    foreach ($columns as $column) {
-                        $columnName = $tableName . '_' . $column;
-                        $table->text($columnName)->nullable();
-                    }
-                });
+                        foreach ($columns as $column) {
+                            $columnName = $tableName . '_' . $column;
+                            $table->text($columnName)->nullable();
+                        }
+                    });
+                }
             }
         }
     }
