@@ -24,6 +24,8 @@ class DbRepositoryTables extends \Illuminate\Console\Command
      */
     public function handle()
     {
+        if(config('dbrepository.disabled') === true) return;
+
         $listen = config('dbrepository.listen');
 
         if(is_array($listen)) {

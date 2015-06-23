@@ -9,6 +9,7 @@ class DbRepositoryListener
 {
     public function subscribe($events)
     {
+        if(config('dbrepository.disabled') === true) return;
 
         $listen = config('dbrepository.listen');
 
