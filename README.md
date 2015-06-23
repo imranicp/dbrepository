@@ -1,5 +1,5 @@
 # dbrepository
-Library that automatically detect changes in your database and stores them in repository table.
+Library that automatically detects changes in your database and stores them in repository table.
 
 ## Warning
 This library is under development. Don't use it in production environment!
