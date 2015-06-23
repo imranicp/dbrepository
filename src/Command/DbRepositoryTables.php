@@ -1,6 +1,16 @@
 <?php
 namespace Wilgucki\DbRepository\Command;
 
+
+/**
+ * Artisan command for creating repository tables based on models listed in configuration class.
+ *
+ * @package wilgucki/dbrepository
+ * @author Maciej Wilgucki <mwilgucki@gmail.com>
+ * @copyright Maciej Wilgucki <mwilgucki@gmail.com>
+ * @license https://github.com/wilgucki/dbrepository/blob/master/LICENSE
+ * @link https://github.com/wilgucki/dbrepository
+ */
 class DbRepositoryTables extends \Illuminate\Console\Command
 {
     /**

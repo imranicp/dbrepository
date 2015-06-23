@@ -2,9 +2,19 @@
 namespace Wilgucki\DbRepository\Listener;
 
 use App\Events;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
+/**
+ * Event listener that captures saving event trigerred in observed model.
+ *
+ * @package wilgucki/dbrepository
+ * @author Maciej Wilgucki <mwilgucki@gmail.com>
+ * @copyright Maciej Wilgucki <mwilgucki@gmail.com>
+ * @license https://github.com/wilgucki/dbrepository/blob/master/LICENSE
+ * @link https://github.com/wilgucki/dbrepository
+ */
 class DbRepositoryListener
 {
     public function subscribe($events)
@@ -23,10 +33,15 @@ class DbRepositoryListener
         }
     }
 
-    public function onModelSaving($event)
+    /**
+     * Handle saving event
+     *
+     * @param Model $model
+     */
+    public function onModelSaving(Model $model)
     {
-        $table = $event->getTable();
-        $attributes = $event->getAttributes();
+        $table = $model->getTable();
+        $attributes = $model->getAttributes();
 
         $columns = [];
         $data = [];
