@@ -13,8 +13,8 @@ Next you need to add ServiceProvider in your app.php config file.
 
 
 	'providers' => [
-	 //... 
-	 Wilgucki\DbRepository\DbRepositoryServiceProvider::class,
+	    //... 
+	    Wilgucki\DbRepository\DbRepositoryServiceProvider::class,
 	]
 
 We're almost done. Now add event listener in EventServiceProvider class (app/Providers/EventServiceProvider.php).
@@ -31,20 +31,23 @@ Last but not least publish config file with artisan command
 ## Usage
 Having library installed, you can point which model classes you want to observe in order to save changes made upon them.
 
-First add model class to dbrepository.php config file
+First, add model class to dbrepository.php config file
 
     'listen' => [
         //...
         'App\User',
     ]
     
-Next run artisan command <code>php artisan dbrepository:createtables</code>
+Next, run artisan command
 
-This command will create table named like source table with *_repository* suffix.
+<code>php artisan dbrepository:createtables</code>
 
-Event listener will fetch all *saving* events fired by declared in config file model and save it in repository table.
+This command will create table named like source table with *repository_* prefix as well as Repository[YourModelClass] extending Model class.
 
-##TODO
-1. Tests.
-2. Detect column type while creating repository table.
-3. Others. Any ideas?
+Event listener will fetch all *created*, *updated* and *deleted* events fired by the model classes declared in config file and save its data in repository table. Each row will be saved with corresponding event type - *created*, *updated* or *deleted*.
+
+If you are using Auth service, you can save an id of a user, who made changes in database. To do so, you need to set <code>save_user</code> option to <code>true</code> in dbdrepository.php config file. This will be omitted if user isn't logged in.
+
+### How to disable package?
+If you want to disable package, you don't need to remove it from the project. You can change <code>disabled</code> option to <code>true</code> in dbrepository.php config file.
+
