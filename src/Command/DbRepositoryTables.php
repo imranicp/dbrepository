@@ -68,3 +68,4 @@ class DbRepositoryTables extends \Illuminate\Console\Command
         }
     }
 }
+

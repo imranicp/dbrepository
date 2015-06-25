@@ -42,3 +42,4 @@ use Wilgucki\DbRepository\Command\DbRepositoryTables;
         $this->commands('command.dbrepository.createtables');
     }
 }
+
