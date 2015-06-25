@@ -1,8 +1,8 @@
 <?php
+
 namespace Wilgucki\DbRepository\Command;
 
 use Illuminate\Support\Facades\Artisan;
-
 
 /**
  * Artisan command for creating repository tables based on models listed in configuration class.
@@ -36,11 +36,13 @@ class DbRepositoryTables extends \Illuminate\Console\Command
      */
     public function handle()
     {
-        if(\Config::get('dbrepository.disabled') === true) return;
+        if (\Config::get('dbrepository.disabled') === true) {
+            return;
+        }
 
         $listen = \Config::get('dbrepository.listen');
 
-        if(is_array($listen)) {
+        if (is_array($listen)) {
             foreach ($listen as $class) {
                 $obj = new $class;
                 $tableName = $obj->getTable();
@@ -68,4 +70,3 @@ class DbRepositoryTables extends \Illuminate\Console\Command
         }
     }
 }
-

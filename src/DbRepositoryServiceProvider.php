@@ -1,4 +1,5 @@
 <?php
+
 namespace Wilgucki\DbRepository;
 
 use Illuminate\Support\ServiceProvider;
@@ -12,7 +13,8 @@ use Wilgucki\DbRepository\Command\DbRepositoryTables;
  * @copyright Maciej Wilgucki <mwilgucki@gmail.com>
  * @license https://github.com/wilgucki/dbrepository/blob/master/LICENSE
  * @link https://github.com/wilgucki/dbrepository
- */class DbRepositoryServiceProvider extends ServiceProvider
+ */
+class DbRepositoryServiceProvider extends ServiceProvider
 {
     /**
      * Bootstrap the application services.
@@ -22,7 +24,7 @@ use Wilgucki\DbRepository\Command\DbRepositoryTables;
     public function boot()
     {
         $this->publishes([
-            __DIR__ . '/../config/dbrepository.php' => config_path('dbrepository.php')
+            __DIR__.'/../config/dbrepository.php' => config_path('dbrepository.php')
         ]);
     }
 
@@ -34,7 +36,7 @@ use Wilgucki\DbRepository\Command\DbRepositoryTables;
     public function register()
     {
         $this->app['command.dbrepository.createtables'] = $this->app->share(
-            function($app) {
+            function ($app) {
                 return new DbRepositoryTables();
             }
         );
@@ -42,4 +44,3 @@ use Wilgucki\DbRepository\Command\DbRepositoryTables;
         $this->commands('command.dbrepository.createtables');
     }
 }
-

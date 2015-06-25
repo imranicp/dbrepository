@@ -1,4 +1,5 @@
 <?php
+
 namespace Wilgucki\DbRepository\Listener;
 
 use App\Events;
@@ -19,24 +20,26 @@ class DbRepositoryListener
 {
     public function subscribe($events)
     {
-        if(\Config::get('dbrepository.disabled') === true) return false;
+        if (\Config::get('dbrepository.disabled') === true) {
+            return false;
+        }
 
         $listen = \Config::get('dbrepository.listen');
 
-        if(is_array($listen)) {
+        if (is_array($listen)) {
             foreach ($listen as $class) {
                 $events->listen(
-                    'eloquent.created: ' . $class,
+                    'eloquent.created: '.$class,
                     'Wilgucki\DbRepository\Listener\DbRepositoryListener@onModelCreated'
                 );
 
                 $events->listen(
-                    'eloquent.updated: ' . $class,
+                    'eloquent.updated: '.$class,
                     'Wilgucki\DbRepository\Listener\DbRepositoryListener@onModelUpdated'
                 );
 
                 $events->listen(
-                    'eloquent.deleted: ' . $class,
+                    'eloquent.deleted: '.$class,
                     'Wilgucki\DbRepository\Listener\DbRepositoryListener@onModelDeleted'
                 );
             }
@@ -90,14 +93,14 @@ class DbRepositoryListener
         $class = $rc->getShortName();
         $namespace = $rc->getNamespaceName();
 
-        $repositoryClass = $namespace . '\\Repository' . $class;
+        $repositoryClass = $namespace.'\\Repository'.$class;
 
         $repository = new $repositoryClass;
-        foreach($attributes as $name => $value) {
-            $repository->{$table . '_' . $name} = $value;
+        foreach ($attributes as $name => $value) {
+            $repository->{$table.'_'.$name} = $value;
         }
 
-        if(\Config::get('dbrepository.save_user') === true && \Auth::check()) {
+        if (\Config::get('dbrepository.save_user') === true && \Auth::check()) {
             $repository->changed_by = \Auth::user()->id;
         }
 
@@ -105,4 +108,3 @@ class DbRepositoryListener
         $repository->save();
     }
 }
-
