@@ -34,6 +34,6 @@ return [
     |
     */
 
-    'listen' => []
+    'listen' => [],
 ];
 
