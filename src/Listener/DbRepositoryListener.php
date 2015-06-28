@@ -93,7 +93,7 @@ class DbRepositoryListener
         $class = $rc->getShortName();
         $namespace = $rc->getNamespaceName();
 
-        $repositoryClass = $namespace.'\\Repository'.$class;
+        $repositoryClass = $namespace.'\\Repository' . $class;
 
         $repository = new $repositoryClass;
         foreach ($attributes as $name => $value) {

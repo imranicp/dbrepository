@@ -3,9 +3,11 @@
 namespace Wilgucki\DbRepository\Command;
 
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Console\Command;
 
 /**
- * Artisan command for creating repository tables based on models listed in configuration class.
+ * Artisan command for creating repository tables based on models listed
+ * in configuration class.
  *
  * @package wilgucki/dbrepository
  * @author Maciej Wilgucki <mwilgucki@gmail.com>
@@ -13,7 +15,7 @@ use Illuminate\Support\Facades\Artisan;
  * @license https://github.com/wilgucki/dbrepository/blob/master/LICENSE
  * @link https://github.com/wilgucki/dbrepository
  */
-class DbRepositoryTables extends \Illuminate\Console\Command
+class DbRepositoryTables extends Command
 {
     /**
      * The name and signature of the console command.
@@ -46,25 +48,43 @@ class DbRepositoryTables extends \Illuminate\Console\Command
             foreach ($listen as $class) {
                 $obj = new $class;
                 $tableName = $obj->getTable();
-                $columns = \Schema::getColumnListing($tableName);
+                $sm = \DB::getDoctrineSchemaManager();
+                $columns = $sm->listTableColumns($tableName);
 
                 if (!\Schema::hasTable('repository_' . $tableName)) {
-                    \Schema::create('repository_' . $tableName, function ($table) use ($columns, $tableName) {
-                        $table->increments('id');
-                        $table->integer('changed_by')->nullable();
-                        $table->text('type')->nullable();
-                        $table->timestamps();
+                    \Schema::create(
+                        'repository_' . $tableName,
+                        function ($table) use ($columns, $tableName) {
+                            $table->increments('id');
+                            $table->integer('changed_by')->nullable();
+                            $table->text('type')->nullable();
+                            $table->timestamps();
 
-                        foreach ($columns as $column) {
-                            $columnName = $tableName . '_' . $column;
-                            $table->text($columnName)->nullable();
+                            foreach ($columns as $columnName => $columnMeta) {
+                                $name = $tableName.'_'.$columnName;
+                                $type = camel_case(
+                                    (string)$columnMeta->getType()
+                                );
+
+                                if ($type == 'string') {
+                                    $table->$type(
+                                        $name,
+                                        $columnMeta->getLength()
+                                    )->nullable();
+                                } else {
+                                    $table->$type($name)->nullable();
+                                }
+                            }
                         }
-                    });
+                    );
 
                     $rc = new \ReflectionClass($class);
                     $className = $rc->getShortName();
 
-                    Artisan::call('make:model', ['name' => 'Repository' . $className]);
+                    Artisan::call(
+                        'make:model',
+                        ['name' => 'Repository' . $className]
+                    );
                 }
             }
         }

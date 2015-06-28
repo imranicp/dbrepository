@@ -24,7 +24,9 @@ class DbRepositoryServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->publishes([
-            __DIR__.'/../config/dbrepository.php' => config_path('dbrepository.php')
+            __DIR__.'/../config/dbrepository.php' => config_path(
+                'dbrepository.php'
+            )
         ]);
     }
 
