@@ -8,7 +8,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
 /**
- * Event listener that captures saving event trigerred in observed model.
+ * Event listener that captures created, updated and deleted event trigerred in observed models.
  *
  * @package wilgucki/dbrepository
  * @author Maciej Wilgucki <mwilgucki@gmail.com>
