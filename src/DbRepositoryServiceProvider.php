@@ -3,6 +3,7 @@
 namespace Wilgucki\DbRepository;
 
 use Illuminate\Support\ServiceProvider;
+use Wilgucki\DbRepository\Command\DbRepositoryGenerator;
 use Wilgucki\DbRepository\Command\DbRepositoryTables;
 
 /**
@@ -37,12 +38,12 @@ class DbRepositoryServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app['command.dbrepository.createtables'] = $this->app->share(
+        $this->app['command.dbrepository.generate'] = $this->app->share(
             function ($app) {
-                return new DbRepositoryTables();
+                return new DbRepositoryGenerator();
             }
         );
 
-        $this->commands('command.dbrepository.createtables');
+        $this->commands('command.dbrepository.generate');
     }
 }
