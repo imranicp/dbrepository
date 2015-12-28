@@ -40,7 +40,8 @@ Next you need to run dbrepository:generate command:
 
 It will create migration file as well as model class named Repository[YourModelClass] for each model class added to listen array.
 Last step is to run migration to create repository tables. If you want to, you can modify migration files.
-<code>php artisian migrate</code> command.
+
+<code>php artisian migrate</code>
 
 Built-in event listener will fetch all *created*, *updated* and *deleted* events fired by the model classes declared
 in config file and save fetched data into repository table. Each row will be saved with corresponding event type -
