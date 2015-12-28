@@ -39,7 +39,7 @@ Next you need to run dbrepository:generate command:
 <code>php artisan dbrepository:generate</code>
 
 It will create migration file as well as model class named Repository[YourModelClass] for each model class added to listen array.
-Last step is to run migration to create repository tables. If you want to, you can modify migration files.
+Last step is to run migration to create repository tables. If you want to, you can modify migration file.
 
 <code>php artisian migrate</code>
 
