@@ -3,6 +3,8 @@
 namespace Wilgucki\DbRepository\Traits;
 
 use Carbon\Carbon;
+use Diff\Differ\ListDiffer;
+use Diff\Differ\MapDiffer;
 
 /**
  * Trait extending model class with additional methods for getting repository data for specific model id
@@ -17,14 +19,35 @@ trait DbRepository
 {
     protected $repositoryModelClass = null;
 
-    /**
-     * Returns all revisions for current row
-     *
-     * @return \Illuminate\Support\Collection
-     */
-    public function getRevisions()
+    public function revisions()
     {
-        return $this->getQuery()->orderBy('created_at')->get();
+        return $this->hasMany($this->getRepositoryModelClass());
+    }
+
+    /**
+     * Compares two revisions
+     *
+     * @param int $revision_id_from
+     * @param int $revision_id_to
+     *
+     * @return array Key is the name of the column with changes. Value is an array
+     *               containing change type as well as new (revision to) and old (revision from) value.
+     */
+    public function compareRevisions($revision_id_from, $revision_id_to)
+    {
+        $revision_from = $this->getRevision($revision_id_from);
+        $revision_to = $this->getRevision($revision_id_to);
+
+        $differ = new MapDiffer();
+        $diff = $differ->doDiff($revision_from->data, $revision_to->data);
+        $out = [];
+        foreach ($diff as $k => $v) {
+            if ($k == 'created_at' || $k == 'updated_at') {
+                continue;
+            }
+            $out[$k] = $v->toArray();
+        }
+        return $out;
     }
 
     /**
@@ -45,7 +68,7 @@ trait DbRepository
      */
     public function getLastRevision()
     {
-        return $this->getQuery()->orderBy('created_at', 'desc')->limit(1)->first();
+        return $this->getQuery()->orderBy('created_at', 'desc')->first();
     }
 
     /**
@@ -55,7 +78,7 @@ trait DbRepository
      */
     public function getFirstRevision()
     {
-        return $this->getQuery()->orderBy('created_at', 'asc')->limit(1)->first();
+        return $this->getQuery()->orderBy('created_at', 'asc')->first();
     }
 
     /**
@@ -102,6 +125,6 @@ trait DbRepository
     protected function getQuery()
     {
         $class = $this->getRepositoryModelClass();
-        return $class::where($this->getTable().'_id', $this->id);
+        return $class::where(str_singular($this->getTable()).'_id', $this->id);
     }
 }

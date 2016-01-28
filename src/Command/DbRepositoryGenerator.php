@@ -47,11 +47,9 @@ class DbRepositoryGenerator extends Command
         if (is_array($listen)) {
             foreach ($listen as $class) {
                 $tableName = (new $class)->getTable();
-                $sm = \DB::getDoctrineSchemaManager();
-                $columns = $sm->listTableColumns($tableName);
 
                 if (!\Schema::hasTable('repository_' . $tableName)) {
-                    $this->createMigrationFile($columns, $tableName);
+                    $this->createMigrationFile($tableName);
                     $this->createModel($class);
                 }
             }
@@ -59,50 +57,22 @@ class DbRepositoryGenerator extends Command
     }
 
     /**
-     * Create database columns for migration file
-     *
-     * @param string $columns
-     * @param string $tableName
-     * @return string
-     */
-    protected function createColumns($columns, $tableName)
-    {
-        $out = '';
-        foreach ($columns as $columnName => $columnMeta) {
-            $name = $tableName.'_'.$columnName;
-            $type = camel_case(
-                (string)$columnMeta->getType()
-            );
-
-            if ($type == 'string') {
-                $length = $columnMeta->getLength();
-                if ($length === null) {
-                    $length = 255;
-                }
-                $out .= str_repeat(' ', 12)
-                    ."\$table->{$type}('{$name}', {$length})->nullable();".PHP_EOL;
-            } else {
-                $out .= str_repeat(' ', 12)
-                    ."\$table->{$type}('{$name}')->nullable();".PHP_EOL;
-            }
-        }
-        return $out;
-    }
-
-    /**
      * Create migration file
      *
-     * @param string $columns
      * @param string $tableName
      */
-    protected function createMigrationFile($columns, $tableName)
+    protected function createMigrationFile($tableName)
     {
-        $columnsTxt = $this->createColumns($columns, $tableName);
         $stubPath = realpath(__DIR__.'/../../stubs');
         $stub = file_get_contents($stubPath.'/migration.stub');
         $stub = str_replace(
-            ['RepositoryClass', 'RepositoryTable', 'RepositoryColumns'],
-            ['CreateRepository'.ucfirst(camel_case($tableName)).'Table', 'repository_' . $tableName, $columnsTxt],
+            ['RepositoryClass', 'RepositoryTable', 'ForeignKey', 'ForeignTable'],
+            [
+                'CreateRepository'.ucfirst(camel_case($tableName)).'Table',
+                'repository_'.$tableName,
+                str_singular($tableName).'_id',
+                $tableName
+            ],
             $stub
         );
 
@@ -120,9 +90,10 @@ class DbRepositoryGenerator extends Command
         $rc = new \ReflectionClass($class);
         $className = $rc->getShortName();
 
-        Artisan::call(
-            'make:model',
-            ['name' => 'Repository' . $className]
-        );
+        $stubPath = realpath(__DIR__.'/../../stubs');
+        $stub = file_get_contents($stubPath.'/model.stub');
+        $stub = str_replace(['ModelClass'], ['Repository'.$className], $stub);
+
+        file_put_contents(app_path('Repository'.$className.'.php'), $stub);
     }
 }

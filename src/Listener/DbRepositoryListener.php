@@ -39,7 +39,7 @@ class DbRepositoryListener
                 );
 
                 $events->listen(
-                    'eloquent.deleted: '.$class,
+                    'eloquent.deleting: '.$class,
                     'Wilgucki\DbRepository\Listener\DbRepositoryListener@onModelDeleted'
                 );
             }
@@ -86,9 +86,6 @@ class DbRepositoryListener
      */
     private function save(Model $model, $changeType)
     {
-        $table = $model->getTable();
-        $attributes = $model->getAttributes();
-
         $rc = new \ReflectionClass($model);
         $class = $rc->getShortName();
         $namespace = $rc->getNamespaceName();
@@ -96,15 +93,12 @@ class DbRepositoryListener
         $repositoryClass = $namespace.'\\Repository' . $class;
 
         $repository = new $repositoryClass;
-        foreach ($attributes as $name => $value) {
-            $repository->{$table.'_'.$name} = $value;
-        }
-
+        $repository->{str_singular($model->getTable()).'_id'} = $model->id;
+        $repository->type = $changeType;
+        $repository->data = $model->getAttributes();
         if (\Config::get('dbrepository.save_user') === true && \Auth::check()) {
             $repository->changed_by = \Auth::user()->id;
         }
-
-        $repository->type = $changeType;
         $repository->save();
     }
 }
