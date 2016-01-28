@@ -59,10 +59,10 @@ Saving user will work only if user is logged in. In other case row will be savd 
 DbRepository provides <code>DbRepository</code> trait which can be used to fetch revisions for specific model.
 First of all you can use relation to fetch all saved revisions.
 
-    $users = User::with('revisions')->all();
+    $users = User::with('revisions')->get();
     foreach ($users as $user) {
-        $repository = $user->repository;
-        // do magic with repositories
+        $revisions = $user->revisions;
+        // do magic with revisions
     }
 
 If you need you can fetch repository by its id.
